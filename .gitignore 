@@ -364,5 +364,6 @@ pyrightconfig.json
 env/
 .env
 .idea/*
+fexnet_s3.db
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm,jetbrains
