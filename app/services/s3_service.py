@@ -2,6 +2,7 @@ from botocore.exceptions import BotoCoreError, ClientError
 import boto3
 from fastapi import UploadFile
 
+
 class S3Service:
     def __init__(self, bucket_name: str, region_name: str, access_key: str, secret_key: str):
         self.bucket_name = bucket_name
@@ -18,9 +19,16 @@ class S3Service:
         except (BotoCoreError, ClientError) as e:
             raise Exception(f"Download failed: {str(e)}")
 
-    async def upload_uploadfile(self, file: UploadFile, s3_key: str):
+    async def upload_files(self, files: list[UploadFile], set_id: str) -> list[str]:
+        uploaded_keys = []
         try:
-            self.s3.upload_fileobj(file.file, self.bucket_name, s3_key)
-            return {"message": "Upload successful", "s3_key": s3_key}
+            for file in files:
+                s3_key = f"{set_id}/{file.filename}"
+                uploaded_keys.append(file.filename)
+
+                await file.seek(0)
+                self.s3.upload_fileobj(file.file, self.bucket_name, s3_key)
+
+            return uploaded_keys
         except (BotoCoreError, ClientError) as e:
-            raise Exception(f"Upload failed: {str(e)}")
+            raise Exception(f"S3 upload failed for set_id {set_id}: {str(e)}")
