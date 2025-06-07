@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -5,13 +8,11 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     DATABASE_URL: str
-
     AWS_ACCESS_KEY: str
     AWS_SECRET_KEY: str
     AWS_BUCKET_NAME: str
     AWS_REGION: str = "eu-north-1"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
-
 
 settings = Settings()
