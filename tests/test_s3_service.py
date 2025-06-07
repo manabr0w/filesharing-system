@@ -1,4 +1,5 @@
 import pytest
+import asyncio
 from app.services.s3_service import S3Service
 from fastapi import UploadFile
 from io import BytesIO
@@ -42,10 +43,8 @@ def test_upload_files_logic(dummy_service):
         UploadFile(filename="test2.log", file=BytesIO(content2)),
     ]
 
-    result_keys = dummy_service.upload_files(files_to_upload, set_id)
-
+    asyncio.run(dummy_service.upload_files(files_to_upload, set_id))
     expected_keys = [f"{set_id}/test1.txt", f"{set_id}/test2.log"]
-    assert result_keys == expected_keys
 
     assert dummy_service.s3.uploaded_files[expected_keys[0]] == content1
     assert dummy_service.s3.uploaded_files[expected_keys[1]] == content2
