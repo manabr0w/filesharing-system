@@ -25,11 +25,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run unit tests
-      run: pytest tests/test_s3_service.py
-
     - name: Write .env file from secret
       run: echo "${{ secrets.DOTENV_FILE }}" > .env
+
+    - name: Run unit tests
+      run: pytest tests/test_s3_service.py
 
     - name: Archive project
       run: zip -r app.zip app .env requirements.txt
