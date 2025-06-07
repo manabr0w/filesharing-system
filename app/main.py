@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.routers import files as files_router
@@ -9,6 +10,13 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['https://animated-sfogliatella-f74c10.netlify.app'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(files_router.router, prefix=settings.API_V1_STR + "/files", tags=["files"])
 
