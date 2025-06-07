@@ -5,7 +5,6 @@ from io import BytesIO
 
 
 class DummyS3Client:
-    """Спрощений фейковий клієнт для тестування логіки без реального AWS"""
     def __init__(self):
         self.uploaded_files = {}
         self.downloaded_files = {}
@@ -29,7 +28,7 @@ def dummy_service():
         access_key="test-access",
         secret_key="test-secret"
     )
-    service.s3 = DummyS3Client()  # замінюємо boto3 клієнт
+    service.s3 = DummyS3Client()
     return service
 
 
