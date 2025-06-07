@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI - Test & Package Release
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: CI - Test & Package
+    name: Build & Test
     runs-on: ubuntu-latest
 
     steps:
@@ -25,51 +25,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run unit tests
-      run: pytest tests/unit
-
     - name: Write .env file from secret
       run: echo "${{ secrets.DOTENV_FILE }}" > .env
 
-    - name: Archive project
-      run: zip -r app.zip app .env requirements.txt
+    - name: Run unit tests
+      run: pytest tests/test_s3_service.py
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Package project
+      run: |
+        mkdir dist
+        zip -r dist/filesharing-release.zip app .env requirements.txt
+
+    - name: Upload release artifact
+      uses: actions/upload-artifact@v4
       with:
-        name: app-package
-        path: app.zip
-
-  cd:
-    name: CD - Deploy to EC2
-    needs: ci
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: app-package
-        path: .
-
-    - name: Upload to EC2
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        source: "app.zip"
-        target: "/home/${{ secrets.EC2_USER }}/deploy"
-
-    - name: Remote deploy command
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          cd ~/deploy
-          unzip -o app.zip
-          pkill uvicorn || true
-          nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 > output.log 2>&1 &
-          echo "Deployed commit $GITHUB_SHA at $(date)" >> deploy.log
+        name: filesharing-release
+        path: dist/filesharing-release.zip
