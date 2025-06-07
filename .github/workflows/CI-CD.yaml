@@ -28,7 +28,7 @@ jobs:
     - name: Print secret lengths (без розкриття значень)
       run: |
         echo "Length of DOTENV_FILE: ${#DOTENV_FILE}"
-        env:
+      env:
         DOTENV_FILE: ${{ secrets.DOTENV_FILE }}
 
 
