@@ -28,12 +28,6 @@ jobs:
     - name: Write .env file from secret
       run: echo "${{ secrets.DOTENV_FILE }}" > .env
 
-    - name: Check .env file
-      run: |
-        echo "------ .env FILE START ------"
-        cat .env
-        echo "------ .env FILE END ------"
-
     - name: Run unit tests
       run: pytest tests/test_s3_service.py
 
