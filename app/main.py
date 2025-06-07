@@ -12,9 +12,6 @@ app = FastAPI(
 
 app.include_router(files_router.router, prefix=settings.API_V1_STR + "/files", tags=["files"])
 
-for route in app.routes:
-    print("🔗 ROUTE:", route.path)
-
 @app.get("/")
 async def root():
     return {
