@@ -43,3 +43,6 @@ DATABASE_URL="db_url"
 ```bash
  uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
+
+
+### Пояснбвальна [записка](https://docs.google.com/document/d/1owjyfgyWtKU2LTts3xRLaUtHc9KNhYI9Y9yMuL3j8rI/edit?usp=sharing) до курсової роботи
